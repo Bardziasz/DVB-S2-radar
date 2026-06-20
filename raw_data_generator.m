@@ -13,3 +13,25 @@ end
 
 
 
+%data=raw_data_generator(cfgDVBS2.MinNumPackets); 
+% waveform = cfgDVBS2(data); % generate the signal
+% waveform_noise=awgn_channel(waveform); % awgn channel
+
+
+% sps = cfgDVBS2.SamplesPerSymbol;
+% constel = comm.ConstellationDiagram('ColorFading',true, ...
+%     'ShowTrajectory',0, ...
+%     'SamplesPerSymbol',sps, ...
+%     'ShowReferenceConstellation',false, ...
+%     'NumInputPorts',2,...
+%     'XLimits',[-1.5 1.5], 'YLimits',[-1.5 1.5]);
+% plHeaderLen = 90*sps;           % PL header length
+% constel(waveform(plHeaderLen+1:end),waveform_noise(plHeaderLen+1:end));
+% release(constel);
+% 
+% BW = 36e6;                 % Typical satellite channel bandwidth
+% Fsym = BW/(1+cfgDVBS2.RolloffFactor);
+% Fsamp = Fsym*sps;
+% scope = spectrumAnalyzer('SampleRate',Fsamp);
+% scope(waveform,waveform_noise)
+
