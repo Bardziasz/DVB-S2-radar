@@ -1,3 +1,5 @@
+% currently not used
+
 function [waveform_noise] = awgn_channel(waveform_clean)
 
 snr=20;

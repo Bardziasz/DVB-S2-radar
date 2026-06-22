@@ -17,6 +17,6 @@ simParams.sco = 2;                                     % Sampling clock offset i
                                                        % per million
 simParams.phNoiseLevel = 'Low';                        % Phase noise level provided as
                                                        % "Low", "Medium", or "High"
-simParams.ENodB = 30;                                 % Energy per symbol to noise ratio in decibels
+simParams.EsNodB = 30;                                 % Energy per symbol to noise ratio in decibels
                           
 

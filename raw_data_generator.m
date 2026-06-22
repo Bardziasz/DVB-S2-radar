@@ -1,3 +1,6 @@
+
+% function not used
+
 function [data] = raw_data_generator(MinNumPackets)
 
 
@@ -11,7 +14,7 @@ data = txPkts(:);
 
 end
 
-
+% code with default generator, without using HelperDVBS2RxInputGenerate()
 
 %data=raw_data_generator(cfgDVBS2.MinNumPackets); 
 % waveform = cfgDVBS2(data); % generate the signal
