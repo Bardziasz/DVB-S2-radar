@@ -3,18 +3,31 @@
 ## File structure
 ```
 DVB-S2-radar/
-├──DVB_S2_generator.mlx         #main file        
+├──main.m         #main file        
 ├──parameters.m                 #simulation parameters
+├──receiver.m                   #receiver function
+├──awgn_channel.m               #awgn channel
 ├──dvbs2xLDPCParityMatrices.mat #file needed for generating signal
-├──awgn_channel.m               #currently not used
-└──raw_data_generator.m         #currently not used
-└──Examples\R2025b\satcomDVB-S2-radar\
-                                    ├──HelperDVBS2RxInputGenerate.m     #main signal generator with sco and cfo
-                                    ├──HelperDVBS2PhaseNoise.m          #phase noise function used to generate sco
-                                    ├──...                              #other function
+
 ```
 
-## Links 
-The program uses helper functions from mathworks:
-[DVB-S2 Link Simulation with RF Impairments and Corrections](https://www.mathworks.com/help/satcom/ug/end-to-end-dvbs2-simulation-with-rf-impairments-and-corrections.html)
+##
+```
+Steps for receiver:
 
+RRC y
+Gardner timing error detector w celu wykrycia momentu próbkowania y
+Frame synchronization czyli gdzie zaczyna się PL frame y
+course frquency synchronization zakłada offset częstotliwości na początku  n
+fine frequency synchronization to samo tylko mniejsze n
+phase synchronization obraca całą konstelację z powrotem n
+
+odczyt PL header- odczyt właściwości y
+demodulacja z prawdopodobieństwem y
+dekodowanie ldpc- pierwszy check y
+BCH - drugi check ys
+
+bb header | czy transmisja była TS czy GS y
+odtworzenie TS y
+
+```

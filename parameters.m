@@ -12,13 +12,13 @@ dvbs2Param.MinNumPackets;
 
 %% bits parameters
 
-numFrames = 5;                       % frame count
+numFrames = 1;                       % frame count
 syncBits = [0 1 0 0 0 1 1 1]';       % synchronization bits 47 HEX
 pktLen = 1496;                       % UP length without synchronization bits
 numPkts = dvbs2Param.MinNumPackets*numFrames;
 txRawPkts = randi([0 1],pktLen,numPkts);
 txPkts = [repmat(syncBits,1,numPkts); txRawPkts]; % adding sync bits to every pktLen
-data = txPkts(:); % changing into a column vector
+data = txPkts(:); 
 
 
 %% simulation parameters
