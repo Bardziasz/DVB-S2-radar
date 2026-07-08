@@ -1,5 +1,5 @@
 
-%% dvb-s2 properties
+%% default dvb-s2 properties
 dvbs2Param=dvbs2WaveformGenerator;
 dvbs2Param.StreamFormat = "TS";
 dvbs2Param.FECFrame = "normal";
@@ -32,4 +32,36 @@ simParam.phNoiseLevel = 'Low';                        % Phase noise level provid
                                                        % "Low", "Medium", or "High"
 simParam.EsNodB = 30;                                 % Energy per symbol to noise ratio in decibels
                           
+
+%% object parameters
+target.positions = [[1200; 1600; 0],[3543.63; 0; 0],[1600; 0; 1200]];
+target.velocities = [[60; 80; 0],[0;0;0],[0; 100; 0]];
+target.crs = [1.3,1.7,2.1];
+
+
+%% structure of arrays for waveform samples and simulation results
+
+wave = repmat(struct(...
+    'wave_tx', [], ...
+    'wave_awgn', [], ...
+    'wave_target_awgn', [], ...
+    'param', [], ...
+    'ber', []),1,50);
+
+% default dvb-s2 parameters
+for k = 1:50
+    wave(k).param = dvbs2WaveformGenerator;
+    wave(k).param.StreamFormat = "TS";
+    wave(k).param.FECFrame = "normal";
+    wave(k).param.MODCOD = 18;
+    wave(k).param.DFL = getDFL(wave(k).param.MODCOD,wave(k).param.FECFrame);
+    wave(k).param.SamplesPerSymbol = 2;
+    wave(k).param.RolloffFactor = 0.35;
+    wave(k).param.HasPilots = true;
+end
+
+%% definition of waveforms with specific parameters
+wave(2).param.RolloffFactor=0.20;
+
+
 

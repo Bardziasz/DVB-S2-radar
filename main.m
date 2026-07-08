@@ -2,10 +2,12 @@ parameters;
 
 %% signal generation
 
-waveform_tx = dvbs2Param(data); % generate the signal
-waveform_awgn=awgn_channel(waveform_tx); % awgn channel
-waveform_rx=receiver(waveform_awgn);
-sps = dvbs2Param.SamplesPerSymbol;
+for i=1:2
+    wave(i).wave_tx = wave(i).param(data); % generate the signal
+    wave(i).wave_awgn=awgn_channel(wave(i).wave_tx); % awgn channel
+    
+end
+sps = wave(1).param.SamplesPerSymbol;
 
 
 %% Transmitted and received signal constellation plot
@@ -13,11 +15,11 @@ sps = dvbs2Param.SamplesPerSymbol;
 txConst = comm.ConstellationDiagram(Title = "constellation", ...
 ShowReferenceConstellation = false, ...
 SamplesPerSymbol = sps, ...
-NumInputPorts=3, ...
+NumInputPorts=2, ...
 ChannelNames = {"Receiver", "Transmitter"});
 plHeaderLen=90*sps;
-txConst(waveform_tx(plHeaderLen+1:end),waveform_awgn(plHeaderLen+1:end),waveform_rx(plHeaderLen+1:end)) 
-%txConst((1:rxParams_ref.plFrameSize*sps),txOut_ref(1:rxParams_ref.plFrameSize*sps)) 
+txConst(wave(1).wave_tx(plHeaderLen+1:end),wave(2).wave_tx(plHeaderLen+1:end)) 
+
 
 
 %% Transmitted and received signal spectrum visualization
@@ -26,7 +28,7 @@ Fsamp = Rsymb*simParam.sps;
 specAn = spectrumAnalyzer(SampleRate = Fsamp, ...
     ChannelNames = ["Transmitted waveform" "Received waveform"], ...
     ShowLegend = true);
-specAn([waveform_tx,waveform_awgn,waveform_rx]);
+specAn([wave(1).wave_tx,wave(2).wave_tx]);
 
 
 

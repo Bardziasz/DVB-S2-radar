@@ -3,7 +3,7 @@
 ## File structure
 ```
 DVB-S2-radar/
-├──main.m         #main file        
+├──main.m                       #main file        
 ├──parameters.m                 #simulation parameters
 ├──receiver.m                   #receiver function
 ├──awgn_channel.m               #awgn channel
