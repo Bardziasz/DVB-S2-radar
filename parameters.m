@@ -1,5 +1,5 @@
 
-%% default dvb-s2 properties
+%% default dvb-s2 parameters;
 dvbs2Param=dvbs2WaveformGenerator;
 dvbs2Param.StreamFormat = "TS";
 dvbs2Param.FECFrame = "normal";
@@ -10,7 +10,7 @@ dvbs2Param.RolloffFactor=0.35;
 dvbs2Param.HasPilots = true;  
 dvbs2Param.MinNumPackets; 
 
-%% bits parameters
+%% message bits parameters
 
 numFrames = 1;                       % frame count
 syncBits = [0 1 0 0 0 1 1 1]';       % synchronization bits 47 HEX
@@ -21,7 +21,7 @@ txPkts = [repmat(syncBits,1,numPkts); txRawPkts]; % adding sync bits to every pk
 data = txPkts(:); 
 
 
-%% simulation parameters
+%% simulation parameters, currently not used
 simParam.sps = dvbs2Param.SamplesPerSymbol;             % Samples per symbol
 simParam.numFrames = 2;                               % Number of frames to be processed
 simParam.chanBW = 36e6;                               % Channel bandwidth in Hertz
@@ -33,7 +33,7 @@ simParam.phNoiseLevel = 'Low';                        % Phase noise level provid
 simParam.EsNodB = 30;                                 % Energy per symbol to noise ratio in decibels
                           
 
-%% object parameters
+%% object parameters, currently not used
 target.positions = [[1200; 1600; 0],[3543.63; 0; 0],[1600; 0; 1200]];
 target.velocities = [[60; 80; 0],[0;0;0],[0; 100; 0]];
 target.crs = [1.3,1.7,2.1];
@@ -48,7 +48,7 @@ wave = repmat(struct(...
     'param', [], ...
     'ber', []),1,50);
 
-% default dvb-s2 parameters
+%% generation of multiple signals with default dvb-s2 parameters
 for k = 1:50
     wave(k).param = dvbs2WaveformGenerator;
     wave(k).param.StreamFormat = "TS";
@@ -58,10 +58,11 @@ for k = 1:50
     wave(k).param.SamplesPerSymbol = 2;
     wave(k).param.RolloffFactor = 0.35;
     wave(k).param.HasPilots = true;
+    wave(k).param.MinNumPackets;
 end
 
-%% definition of waveforms with specific parameters
-wave(2).param.RolloffFactor=0.20;
+%% definition of waveforms with edition of specific parameters
+wave(2).param.RolloffFactor=0.20; %changing default rollof from 0.35 to 0.20 in wave(2)
 
 
 
