@@ -9,6 +9,8 @@ dvbs2Param.SamplesPerSymbol = 2;
 dvbs2Param.RolloffFactor=0.35;
 dvbs2Param.HasPilots = true;  
 dvbs2Param.MinNumPackets; 
+fc=10.2e9; %nosna 10.2 GHz z artykułu
+
 
 %% message bits parameters
 
@@ -42,21 +44,22 @@ target.crs = [1.3,1.7,2.1];
 
 wave = repmat(struct(...
     'wave_tx', [], ...
+    'wave_rx', [], ...
     'wave_awgn', [], ...
     'wave_target_awgn', [], ...
     'param', [], ...
     'ber', [], ...
     'Rsymb',[], ...
-    'Fsamp', []),1,50);
+    'Fsamp', []),1,10);
 
 %% generation of multiple signals with default dvb-s2 parameters
-for k = 1:50
+for k = 1:10
     wave(k).param = dvbs2WaveformGenerator;
     wave(k).param.StreamFormat = "TS";
     wave(k).param.FECFrame = "normal";
     wave(k).param.MODCOD = 18;
     wave(k).param.DFL = getDFL(wave(k).param.MODCOD,wave(k).param.FECFrame);
-    wave(k).param.SamplesPerSymbol = 2;
+    wave(k).param.SamplesPerSymbol = 12;
     wave(k).param.RolloffFactor = 0.35;
     wave(k).param.HasPilots = true;
     wave(k).param.MinNumPackets;
