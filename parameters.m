@@ -21,8 +21,7 @@ txPkts = [repmat(syncBits,1,numPkts); txRawPkts]; % adding sync bits to every pk
 data = txPkts(:); 
 
 
-%% simulation parameters, currently not used
-simParam.sps = dvbs2Param.SamplesPerSymbol;             % Samples per symbol
+%% simulation parameters
 simParam.numFrames = 2;                               % Number of frames to be processed
 simParam.chanBW = 36e6;                               % Channel bandwidth in Hertz
 simParam.cfo = 3e3;                                   % Carrier frequency offset in Hertz
@@ -31,7 +30,7 @@ simParam.sco = 2;                                     % Sampling clock offset in
 simParam.phNoiseLevel = 'Low';                        % Phase noise level provided as
                                                        % "Low", "Medium", or "High"
 simParam.EsNodB = 30;                                 % Energy per symbol to noise ratio in decibels
-                          
+                      
 
 %% object parameters, currently not used
 target.positions = [[1200; 1600; 0],[3543.63; 0; 0],[1600; 0; 1200]];
@@ -46,7 +45,9 @@ wave = repmat(struct(...
     'wave_awgn', [], ...
     'wave_target_awgn', [], ...
     'param', [], ...
-    'ber', []),1,50);
+    'ber', [], ...
+    'Rsymb',[], ...
+    'Fsamp', []),1,50);
 
 %% generation of multiple signals with default dvb-s2 parameters
 for k = 1:50
@@ -59,10 +60,12 @@ for k = 1:50
     wave(k).param.RolloffFactor = 0.35;
     wave(k).param.HasPilots = true;
     wave(k).param.MinNumPackets;
+    wave(k).Rsymb = simParam.chanBW/(1 + wave(k).param.RolloffFactor);
+    wave(k).Fsamp = wave(k).Rsymb*wave(k).param.SamplesPerSymbol;
+
 end
 
+
+
 %% definition of waveforms with edition of specific parameters
-wave(2).param.RolloffFactor=0.20; %changing default rollof from 0.35 to 0.20 in wave(2)
-
-
 
