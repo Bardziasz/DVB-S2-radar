@@ -10,7 +10,7 @@ dvbs2Param.RolloffFactor=0.35;
 dvbs2Param.HasPilots = true;  
 dvbs2Param.MinNumPackets; 
 fc=10.2e9; %nosna 10.2 GHz z artykułu
-
+wave_num=1;
 
 %% message bits parameters
 
@@ -24,8 +24,8 @@ data = txPkts(:);
 
 
 %% simulation parameters
-simParam.numFrames = 2;                               % Number of frames to be processed
-simParam.chanBW = 36e6;                               % Channel bandwidth in Hertz
+simParam.numFrames = 1;                               % Number of frames to be processed
+simParam.chanBW = 36e6; %36e6;                               % Channel bandwidth in Hertz
 simParam.cfo = 3e3;                                   % Carrier frequency offset in Hertz
 simParam.sco = 2;                                     % Sampling clock offset in parts
                                                        % per million
@@ -34,7 +34,7 @@ simParam.phNoiseLevel = 'Low';                        % Phase noise level provid
 simParam.EsNodB = 30;                                 % Energy per symbol to noise ratio in decibels
                       
 
-%% object parameters, currently not used
+%% object parameters, currently not useds
 target.positions = [[1200; 1600; 0],[3543.63; 0; 0],[1600; 0; 1200]];
 target.velocities = [[60; 80; 0],[0;0;0],[0; 100; 0]];
 target.crs = [1.3,1.7,2.1];
@@ -53,13 +53,13 @@ wave = repmat(struct(...
     'Fsamp', []),1,10);
 
 %% generation of multiple signals with default dvb-s2 parameters
-for k = 1:10
+for k = 1:wave_num
     wave(k).param = dvbs2WaveformGenerator;
     wave(k).param.StreamFormat = "TS";
-    wave(k).param.FECFrame = "normal";
+    wave(k).param.FECFrame = "short";
     wave(k).param.MODCOD = 18;
     wave(k).param.DFL = getDFL(wave(k).param.MODCOD,wave(k).param.FECFrame);
-    wave(k).param.SamplesPerSymbol = 12;
+    wave(k).param.SamplesPerSymbol = 10;
     wave(k).param.RolloffFactor = 0.35;
     wave(k).param.HasPilots = true;
     wave(k).param.MinNumPackets;
