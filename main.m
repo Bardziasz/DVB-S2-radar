@@ -15,8 +15,8 @@ sps = wave(1).param.SamplesPerSymbol; %sps is the same for every wave(k)
 
 if(1)  
     echoes=[0.1*exp(j*180/180*pi),0.01*exp(j*60/180*pi),0.1*exp(j*90/180*pi),0.1*exp(j*160/180*pi)]; %echoes
-    doppler=[40e6, 7e3, 5e3, 2e3]; %doppler frequencies calculated from objects with velocities ranging 1000-400 km/h with carrier frequency of 10.2 Ghz, (nośna do liczenia dopplera wzięta z artykułu)
-    delays=[50, 100, 100, 100];
+    doppler=[40e3, 7e3, 5e3, 2e3]; %doppler frequencies calculated from objects with velocities ranging 1000-400 km/h with carrier frequency of 10.2 Ghz, (nośna do liczenia dopplera wzięta z artykułu)
+    delays=[0, 100, 100, 100];
     x=wave(1).wave_tx;
     fs=wave(1).Fsamp;
     N=length(x);
@@ -38,10 +38,10 @@ if(1)
 end
 
 
-
+[afmag,delay,doppler]=ambgfun()
 
 %% constellation
-if(1)
+if(0)
     txConst = comm.ConstellationDiagram(Title = "constellation", ...
     ShowReferenceConstellation = false, ...
     SamplesPerSymbol = sps, ...
