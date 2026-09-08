@@ -1,5 +1,8 @@
-parameters;
 close all;
+clear all;
+parameters;
+
+
 %% signal generation, every wave(i) is a signal with set of its own parameters
 
 for k=1:wave_num
@@ -9,51 +12,45 @@ for k=1:wave_num
 end
 sps = wave(1).param.SamplesPerSymbol; %sps is the same for every wave(k)
 
+wave_tx=[];
 if(1)
     for k=1:wave_num
-        wave_tx=[wave_tx; wave(k).wave_tx];
+        wave_tx=[wave_tx; wave(k).wave_tx]; %summing wave(k).wave tx k times to wave_tx
     end
 end
 
-wave_tx=wave(1).wave_tx;
-size(wave_tx);
-%wave_tx=wave_tx(1:4000);
+size(wave_tx)
 
 
 %% channel
 
 if(1)  
-    echoes=[1*exp(j*180/180*pi),0.01*exp(j*60/180*pi),0.1*exp(j*90/180*pi),0.1*exp(j*160/180*pi)]; %echoes
-    doppler=[3e5, 0, 5, 2]; %doppler frequencies calculated from objects with velocities ranging 1000-400 km/h with carrier frequency of 10.2 Ghz, (nośna do liczenia dopplera wzięta z artykułu)
-    delays=[0, 100, 100, 100];
+    echoes=[0.5*exp(j*180/180*pi),0.01*exp(j*60/180*pi),0.1*exp(j*90/180*pi),0.1*exp(j*160/180*pi)]; %echoes
+    doppler=[0, 0, 3e3, 0]; %doppler frequencies calculated from objects with velocities ranging 1000-400 km/h with carrier frequency of 10.2 Ghz, (nośna do liczenia dopplera wzięta z artykułu)
+    delays=[400, 300, 200, 100];
     x=wave_tx;
     fs=wave(1).Fsamp;
+    x=[zeros( delays(3), 1); x]; %padding 
     N=length(x);
+    y1=x;
     t=(0:N-1)'/fs;
-
     for k=1:length(echoes)
-        y1=circshift(wave_tx,delays(k));
-        x=x+y1*echoes(k).*exp(j*2*pi*t*doppler(k)); %adding echoes and doppler 
+        
+        y1=1*y1.*exp(j*2*pi*t*doppler(k)); %adding echoes and doppler  *echoes(k) +y1
+        x=x+y1;
         
     end
-    if(0)
-        y=awgn(x,0); % awgn
-    else
-        y=x;
+    if(1)
+        x=awgn(x,20); % awgn
     end
-    wave_rx=y;
+    wave_rx=x;
     clear x y
 
 end
 
+
+
 if(1)
-    ambgfun(real(wave_tx), real(wave_rx),wave(1).Fsamp,[10e3, 10e3],"Cut","Doppler","CutValue",40); %wave(1).Fsamp
-    %xlim([0 100])
-    hold on;
-end
-
-
-if(0)
      [ RVM, r, v, r_int, v_int ] = caf_fast( wave_tx, wave_rx, wave(1).Fsamp, 0 );
 end
 
@@ -70,7 +67,7 @@ if(0)
 end
 
 % spectrum FFT
-if(0)
+if(1)
     figure(1);
     fs=wave(1).Fsamp;
     N=length(wave_rx);
@@ -86,12 +83,12 @@ if(0)
     ylim([-140 -30])
     legend('RX','TX')
     subplot(2,1,2);
-    plot(f,20*log10(abs(RX)/N),f,20*log10(abs(TX)/N))
-    xlabel('Frequency [Hz] (doppler range)')
-    ylabel('Magnitue [dB]')
-    xlim([1e3 20e3])
-    ylim([-140 -30])
-    legend('RX','TX')
+    %plot(f,20*log10(abs(RX)/N),f,20*log10(abs(TX)/N))
+    %xlabel('Frequency [Hz] (doppler range)')
+    %ylabel('Magnitue [dB]')
+    %%xlim([1e3 20e3])
+    %ylim([-140 -30])
+    %legend('RX','TX')
 end
 %% spectrum scope
 if(0)

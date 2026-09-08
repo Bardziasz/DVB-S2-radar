@@ -10,7 +10,7 @@ dvbs2Param.RolloffFactor=0.35;
 dvbs2Param.HasPilots = true;  
 dvbs2Param.MinNumPackets; 
 fc=10.2e9; %nosna 10.2 GHz z artykułu
-wave_num=1;
+wave_num=10;
 
 %% message bits parameters
 
@@ -59,7 +59,7 @@ for k = 1:wave_num
     wave(k).param.FECFrame = "short";
     wave(k).param.MODCOD = 18;
     wave(k).param.DFL = getDFL(wave(k).param.MODCOD,wave(k).param.FECFrame);
-    wave(k).param.SamplesPerSymbol = 10;
+    wave(k).param.SamplesPerSymbol = 5;
     wave(k).param.RolloffFactor = 0.35;
     wave(k).param.HasPilots = true;
     wave(k).param.MinNumPackets;
