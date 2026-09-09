@@ -1,47 +1,37 @@
 
-%% default dvb-s2 parameters;
-dvbs2Param=dvbs2WaveformGenerator;
-dvbs2Param.StreamFormat = "TS";
-dvbs2Param.FECFrame = "normal";
-dvbs2Param.MODCOD = 18;                % modulation type , 16APSK 2/3
-dvbs2Param.DFL=getDFL(dvbs2Param.MODCOD,dvbs2Param.FECFrame);
-dvbs2Param.SamplesPerSymbol = 2;
-dvbs2Param.RolloffFactor=0.35;
-dvbs2Param.HasPilots = true;  
-dvbs2Param.MinNumPackets; 
-fc=10.2e9; %nosna 10.2 GHz z artykułu
-wave_num=10;
+%% parametry symulacji
+wave_num=10;  % liczba zbiorów danych do wygenerowania
 
-%% message bits parameters
+%% parametry sprzętu
+% Symulowana satelita: Eutelsat Hotbird 13C na wys. 35 777 km
+fc=10.87e9;  
+simParam.chanBW = 27.5e6;   %bandwidth
+c=299792458;
 
-numFrames = 1;                       % frame count
-syncBits = [0 1 0 0 0 1 1 1]';       % synchronization bits 47 HEX
-pktLen = 1496;                       % UP length without synchronization bits
-numPkts = dvbs2Param.MinNumPackets*numFrames;
-txRawPkts = randi([0 1],pktLen,numPkts);
-txPkts = [repmat(syncBits,1,numPkts); txRawPkts]; % adding sync bits to every pktLen
-data = txPkts(:); 
+%% parametry celów
+% samolot, helikopter, dron
+target.position = [10e3,300, 120]; % distance on y axis [meters]
+target.angle_odb = [60, 30, 30]; % kąt widzenia obiektu przez antene ref
+target.angle_sat = [30, 15, 15]; % kąt widzenia obiektu przez satelitę
+target.RCS = [18,7,-15]; %dBsm
+target.velocity =[236.1, 66.6, 27.7]; %[m/s]
 
+for k=1:length(target.position)
+    target.velocity_radial_odb(k)=target.velocity(k)*cosd(target.angle_odb(k)); % prędkość kątowa odb
+    target.velocity_radial_sat(k)=target.velocity(k)*cosd(target.angle_sat(k)); % prędkość kątowa sat
+    target.distance_odb(k) = target.position(k)/sind(target.angle_odb(k)); %dystans bezpośredni od anteny odb
+    target.distance_sat(k) = target.position(k)/sind(target.angle_sat(k)); %dystans bezpośredni od sat
 
-%% simulation parameters
-simParam.numFrames = 1;                               % Number of frames to be processed
-simParam.chanBW = 36e6; %36e6;                               % Channel bandwidth in Hertz
-simParam.cfo = 3e3;                                   % Carrier frequency offset in Hertz
-simParam.sco = 2;                                     % Sampling clock offset in parts
-                                                       % per million
-simParam.phNoiseLevel = 'Low';                        % Phase noise level provided as
-                                                       % "Low", "Medium", or "High"
-simParam.EsNodB = 30;                                 % Energy per symbol to noise ratio in decibels
-                      
+    target.attenuation(k)= -20; %dB    | jeszcze nie policzone z RCS
+    target.attenuation_linear(k)=10^(target.attenuation(k)/20);
+    
+    target.doppler(k)=(target.velocity_radial_odb(k)+target.velocity_radial_sat(k))/(c/fc); % efekt dopplera z uwzględnieniem obu prędkości kątowych
 
-%% object parameters, currently not useds
-target.positions = [[1200; 1600; 0],[3543.63; 0; 0],[1600; 0; 1200]];
-target.velocities = [[60; 80; 0],[0;0;0],[0; 100; 0]];
-target.crs = [1.3,1.7,2.1];
+end
+fprintf("[Samolot helikopter dron]");
+target
 
-
-%% structure of arrays for waveform samples and simulation results
-
+%% struktura tablic
 wave = repmat(struct(...
     'wave_tx', [], ...
     'wave_rx', [], ...
@@ -52,7 +42,7 @@ wave = repmat(struct(...
     'Rsymb',[], ...
     'Fsamp', []),1,10);
 
-%% generation of multiple signals with default dvb-s2 parameters
+%% generacja sygnałów
 for k = 1:wave_num
     wave(k).param = dvbs2WaveformGenerator;
     wave(k).param.StreamFormat = "TS";
@@ -68,6 +58,16 @@ for k = 1:wave_num
 
 end
 
+fs=wave(1).Fsamp;
+
+%% message bits parameters
+numFrames = 1;                       % frame count
+syncBits = [0 1 0 0 0 1 1 1]';       % synchronization bits 47 HEX
+pktLen = 1496;                       % UP length without synchronization bits
+numPkts = wave(k).param.MinNumPackets*numFrames;
+txRawPkts = randi([0 1],pktLen,numPkts);
+txPkts = [repmat(syncBits,1,numPkts); txRawPkts]; % adding sync bits to every pktLen
+data = txPkts(:); 
 
 
 %% definition of waveforms with edition of specific parameters

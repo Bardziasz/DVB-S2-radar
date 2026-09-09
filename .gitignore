@@ -1,5 +1,4 @@
 .vscode/
 Examples/
-caf_fast.m
 test_caf_dvbs2.m
 OFDMDisturb.m
